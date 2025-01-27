@@ -8,27 +8,36 @@ router.get("/", (req, res) => {
   res.send("working!");
 });
 
+// Route for checking the number
 router.post("/", async (req, res) => {
-  const { id } = req.body;
+  const { number } = req.body;
 
-  if (!id) {
-    return res.status(400).send("ID is required");
+  if (!number) {
+    return res.status(400).send("Number is required");
   }
 
   try {
-    const schbangDoc = await db.collection("schbang").doc(id).get();
-    if (schbangDoc.exists) {
-      return res.send("Hi Schbanger!");
+    // Check if the number exists in the 'users/schbang' collection
+    const schbangDoc = await db.collection("users").doc("schbang").get();
+    const schbangData = schbangDoc.exists ? schbangDoc.data() : null;
+
+    // Check if the number matches
+    if (schbangData && schbangData.number === number) {
+      return res.send("S"); // Response for schbang
     }
 
-    const clientDoc = await db.collection("client").doc(id).get();
-    if (clientDoc.exists) {
-      return res.send("Hi Client!");
+    // Check if the number exists in the 'users/client' collection
+    const clientDoc = await db.collection("users").doc("client").get();
+    const clientData = clientDoc.exists ? clientDoc.data() : null;
+
+    // Check if the number matches
+    if (clientData && clientData.number === number) {
+      return res.send("C"); // Response for client
     }
 
-    return res.send("Hey, you are unknown to us");
+    return res.send("U"); // Response for unknown
   } catch (error) {
-    console.error("Error checking ID:", error);
+    console.error("Error checking number:", error);
     return res.status(500).send("Internal Server Error");
   }
 });
