@@ -11,25 +11,29 @@ router.post("/", async (req, res) => {
   }
 
   try {
-    // Check if the number exists in the 'users/schbang' collection
-    const schbangDoc = await db.collection("users").doc("schbang").get();
-    const schbangData = schbangDoc.exists ? schbangDoc.data() : null;
+    // Convert the input number to a number type
+    const inputNumber = Number(number);
 
-    // Check if the number matches
-    if (schbangData && schbangData.number === number) {
-      return res.send("S"); // Response for schbang
-    }
-
-    // Check if the number exists in the 'users/client' collection
+    // Check if the number exists in the 'users/client' document
     const clientDoc = await db.collection("users").doc("client").get();
-    const clientData = clientDoc.exists ? clientDoc.data() : null;
-
-    // Check if the number matches
-    if (clientData && clientData.number === number) {
-      return res.send("C"); // Response for client
+    if (clientDoc.exists) {
+      const clientData = clientDoc.data();
+      if (Number(clientData.number) === inputNumber) {
+        return res.send("C"); // Response for client
+      }
     }
 
-    return res.send("U"); // Response for unknown
+    // Check if the number exists in the 'users/schbang' document
+    const schbangDoc = await db.collection("users").doc("schbang").get();
+    if (schbangDoc.exists) {
+      const schbangData = schbangDoc.data();
+      if (Number(schbangData.number) === inputNumber) {
+        return res.send("S"); // Response for schbang
+      }
+    }
+
+    // If no matches found, return "U"
+    return res.send("U");
   } catch (error) {
     console.error("Error checking number:", error);
     return res.status(500).send("Internal Server Error");
