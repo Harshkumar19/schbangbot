@@ -1,12 +1,6 @@
-// src/routes/idCheck.js
 const express = require("express");
 const router = express.Router();
 const db = require("../firebase");
-
-// New route for the root path
-router.get("/", (req, res) => {
-  res.send("working!");
-});
 
 // Route for checking the number
 router.post("/", async (req, res) => {
