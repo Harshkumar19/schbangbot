@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../firebase");
+const db = require("../mongodb");
 
 // Route for checking the number
 router.post("/", async (req, res) => {
@@ -11,25 +11,20 @@ router.post("/", async (req, res) => {
   }
 
   try {
-    // Convert the input number to a number type
     const inputNumber = Number(number);
 
-    // Check if the number exists in the 'users/client' document
-    const clientDoc = await db.collection("users").doc("client").get();
-    if (clientDoc.exists) {
-      const clientData = clientDoc.data();
-      if (Number(clientData.number) === inputNumber) {
-        return res.send("C"); // Response for client
-      }
+    // Check if the number exists in the 'client' collection
+    const clientData = await db.collection("users").findOne({ _id: "client" });
+    if (clientData && Number(clientData.number) === inputNumber) {
+      return res.send("C"); // Response for client
     }
 
-    // Check if the number exists in the 'users/schbang' document
-    const schbangDoc = await db.collection("users").doc("schbang").get();
-    if (schbangDoc.exists) {
-      const schbangData = schbangDoc.data();
-      if (Number(schbangData.number) === inputNumber) {
-        return res.send("S"); // Response for schbang
-      }
+    // Check if the number exists in the 'schbang' collection
+    const schbangData = await db
+      .collection("users")
+      .findOne({ _id: "schbang" });
+    if (schbangData && Number(schbangData.number) === inputNumber) {
+      return res.send("S"); // Response for schbang
     }
 
     // If no matches found, return "U"
