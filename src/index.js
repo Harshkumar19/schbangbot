@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 app.use("/check-id", idCheckRoute);
 app.use("/add", addDataRoute);
 app.use("/", homeRoute);
-app.use("/aaaa");
+// app.use("/aaaa");
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
