@@ -1,9 +1,16 @@
-const { MongoClient } = require("mongodb");
+const { MongoClient, ServerApiVersion } = require("mongodb");
+
 require("dotenv").config(); // Load environment variables
 
 const uri = process.env.MONGODB_URI; // MongoDB connection string
 const client = new MongoClient(uri, {
-  ssl: true, // Explicitly enable SSL
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  },
+  tls: true, // Explicitly enforce TLS
+  tlsAllowInvalidCertificates: false, // Keep this false for production
 });
 
 async function connectDB() {
