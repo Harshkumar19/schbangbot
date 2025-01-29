@@ -26,7 +26,19 @@ router.get("/renew", async (req, res) => {
       { _id: "client", numbers: clientNumbers },
       { _id: "schbang", numbers: schbangNumbers },
     ]);
+    // Create the 'work' collection and add random work details
+    const workDetails = [];
+    for (let i = 0; i < 10; i++) {
+      workDetails.push({
+        title: `Descriptive Work Title ${i + 1}`,
+        brand: `Brand Name ${i + 1}`,
+        description: `Brief description of work ${i + 1}`,
+        tags: [`Tag${i + 1}`, `Tag${i + 2}`],
+        link: `http://example.com/work${i + 1}`,
+      });
+    }
 
+    await db.collection("work").insertMany(workDetails);
     res.send("Database renewed and data added.");
   } catch (error) {
     console.error("Error renewing database:", error);
@@ -66,7 +78,8 @@ router.get("/getlatestwork", async (req, res) => {
       .limit(5)
       .toArray();
 
-    res.send(latestWorks);
+    // Wrap the response in an object with the variable name 'work'
+    res.send({ work: latestWorks });
   } catch (error) {
     console.error("Error fetching latest works:", error);
     res.status(500).send("Internal Server Error");

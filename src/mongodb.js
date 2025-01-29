@@ -3,12 +3,12 @@ require("dotenv").config(); // Load environment variables
 
 const uri = process.env.MONGODB_URI; // MongoDB connection string
 const client = new MongoClient(uri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
+  ssl: true, // Explicitly enable SSL
 });
 
 async function connectDB() {
   try {
+    console.log("trying to connect");
     await client.connect();
     console.log("Connected to MongoDB");
   } catch (error) {

@@ -11,11 +11,12 @@ router.post("/", async (req, res) => {
   }
 
   try {
-    const inputNumber = Number(number);
+    // Convert the input number to a string for comparison
+    const inputNumber = String(number);
 
     // Check if the number exists in the 'client' collection
     const clientData = await db.collection("users").findOne({ _id: "client" });
-    if (clientData && Number(clientData.number) === inputNumber) {
+    if (clientData && clientData.numbers.includes(inputNumber)) {
       return res.send({ userStatus: "C" }); // Response for client
     }
 
@@ -23,7 +24,7 @@ router.post("/", async (req, res) => {
     const schbangData = await db
       .collection("users")
       .findOne({ _id: "schbang" });
-    if (schbangData && Number(schbangData.number) === inputNumber) {
+    if (schbangData && schbangData.numbers.includes(inputNumber)) {
       return res.send({ userStatus: "S" }); // Response for schbang
     }
 
